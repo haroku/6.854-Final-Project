@@ -1,4 +1,5 @@
 import numpy as np
+from WeakLearn import *
 #weights alpha[t] (list)
 #distr D[t][x] (list of np.arrays)
 #weak learner h[x] (np.array)
