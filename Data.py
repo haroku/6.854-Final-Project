@@ -17,16 +17,17 @@ def generate_data(num_dim, num_data):
   
   '''
   #Generate Means numpy array
-  mu_Means = 
-  sigma_Means = 
+  mu_Means = 0
+  sigma_Means = 1
   
   Means = np.random.normal(mu_Means, sigma_Means, 1)
   
   #Generate Means numpy array
-  mu_Var = 
-  sigma_Var  = 
+  mu_Var = 1
+  sigma_Var  = 1
   
   Var = np.random.normal(mu_Var, sigma_Var, num_data)
+  Var = np.absolute(Var)
   
   X  = np.zeros((num_data, num_dim))
   
