@@ -8,7 +8,7 @@ from WeakLearn import *
 
 #weak_learner function: given a time step and distribution it returns a weak learner
 #example: get_weak_learner(5,np.array([1.0/m for i in xrange(m)]),m, x, fx)
-def get_weak_learner(t,D,m,x,fx):	
+def get_weak_learner(t,dist,num_data,data,labels):	
 
 	r=np.sign(np.random.rand(m)-.5)
 	#print r
@@ -22,18 +22,18 @@ def get_weak_learner(t,D,m,x,fx):
 #given labelled examples x[j],hx[j]
 #return H[x]
 # example: adaboost(5,np.array([0,1,2,3,4]), np.array([1,-1,-1,1,1]), 7)
-def adaboost(m, x, fx, T):
+def adaboost(num_data, data, labels, num_iters):
 	'''
-	m = Number of examples
-	x = Training Set
-	fx = Classification of training data
-	T = num iterations to run Adaboost
+	num_data = Number of examples
+	data = Training Set
+	labels = Classification of training data
+	num_iters = num iterations to run Adaboost
 	'''
-	D=[np.array([1.0/m for i in xrange(m)])]
+	dist=[np.array([1.0/m for i in xrange(m)])]
 	alpha=[0 for i in xrange(T)]
 	h_t=[]
-	for t in xrange(T):
-		(h,eps_t)=get_weak_learner(t,D[t],m,x,fx)
+	for t in xrange(num_iters):
+		(h,eps_t)=get_weak_learner(t,dist[t],num_data,data,labels)
 		if eps_t==0:
 			return h
 		h_t.append(h)
