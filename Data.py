@@ -17,29 +17,31 @@ def generate_data(num_dim, num_data):
   
   '''
   #Generate Means numpy array
-  mu_Means = 0
-  sigma_Means = 1
+  mu_means = 0
+  sigma_means = 1
   
-  Means = np.random.normal(mu_Means, sigma_Means, num_dim)
-
-  #Generate Means numpy array
-  mu_Var = 1
-  sigma_Var  = 1
+  means = np.random.normal(mu_means, sigma_means, num_dim)
+  print means
+  #Generate means numpy array
+  mu_stdev = 1
+  sigma_stdev = 1
   
-  Var = np.random.normal(mu_Var, sigma_Var, num_dim)
-  Var = np.absolute(Var)
+  stdev = np.random.normal(mu_stdev, sigma_stdev, num_dim)
+  stdev = np.absolute(stdev)
+  print stdev
   
-  X  = np.zeros((num_data, num_dim))
+  X  = np.zeros((num_data + 1, num_dim))
   
   for j in range(num_dim):
-    X[:,j] = np.random.normal(Mu[j], Var[j], num_dim)
+    print 'mean, stdev', means[j], stdev[j]
+    X[:,j] = np.random.normal(means[j], stdev[j], num_data+1)
   
   normal = np.random.normal(0,1,num_dim)
   
-  point = np.random.normal(np.random.normal(mu_Means, sigma_Means, 1), np.random.normal(mu_Var, sigma_Var, 1),num_dim)
-  
-  return (normal, point, X)
+
+  return (normal, X[-1], X[0:-1])
   
   
 
 
+print generate_data(3,10)

@@ -82,4 +82,7 @@ def label_points(num_dim,num_data, class_noise, noise_type):
 		return (out_data,labels)
 
 
+#label_points(3,10,True,"none")
+
+
 
