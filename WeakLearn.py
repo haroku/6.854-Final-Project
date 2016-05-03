@@ -4,7 +4,8 @@ t is iteration number in the boosting algorithm
 dist is distribution of the data points
 data is the data points
 label is their labels
-returns a function from points to labels
+returns a function from points to labels and an error rate as 
+(h,eps)
 '''
 
 def get_weak_learner(t,dist,num_data,data,labels):
