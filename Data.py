@@ -20,19 +20,19 @@ def generate_data(num_dim, num_data):
   mu_Means = 0
   sigma_Means = 1
   
-  Means = np.random.normal(mu_Means, sigma_Means, 1)
-  
+  Means = np.random.normal(mu_Means, sigma_Means, num_dim)
+
   #Generate Means numpy array
   mu_Var = 1
   sigma_Var  = 1
   
-  Var = np.random.normal(mu_Var, sigma_Var, num_data)
+  Var = np.random.normal(mu_Var, sigma_Var, num_dim)
   Var = np.absolute(Var)
   
   X  = np.zeros((num_data, num_dim))
   
-  for j in range(num_data):
-    X[j] = np.random.normal(Mu[j], Var[j], num_dim)
+  for j in range(num_dim):
+    X[:,j] = np.random.normal(Mu[j], Var[j], num_dim)
   
   normal = np.random.normal(0,1,num_dim)
   
