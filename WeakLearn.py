@@ -8,3 +8,9 @@ returns a function from points to labels
 '''
 
 def get_weak_learner(t,dist,num_data,data,labels):
+
+
+
+if __name__ == "__main__":
+  pass
+

@@ -48,8 +48,10 @@ def adaboost(num_data, data, labels, num_iters):
 	H=np.sign(np.dot(np.transpose(h_t),alpha))
 	return H
 
-m=1000
-T=100
-r= np.sign(np.random.rand(m)-.5)
-H= adaboost(m,np.zeros(m),r, T)
-print (1.0-np.sum(H*r)/1000.0)/2
+
+if __name__ == '__main__':
+	m=1000
+	T=100
+	r= np.sign(np.random.rand(m)-.5)
+	H= adaboost(m,np.zeros(m),r, T)
+	print (1.0-np.sum(H*r)/1000.0)/2

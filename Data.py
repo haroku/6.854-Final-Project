@@ -43,5 +43,5 @@ def generate_data(num_dim, num_data):
   
   
 
-
-print generate_data(3,10)
+if __name__ == "__main__":
+  print generate_data(3,10)
