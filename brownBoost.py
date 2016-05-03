@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+from scipy.integrate import ode
 from WeakLearn import *
 
 '''
@@ -28,7 +28,19 @@ def brownBoost(X, Y, c, v):
           h, error = WeakLearn(W_norm, X, Y)
 
           #Solve differential equation
-          def f(t, alpha):
+          def f(t, alpha,c,h,time_left):
                #Define differential equation
+               num = -1/c*(R + alpha*h(X)*Y+time_left-t)**2
+               num = np.exp(num)
+               denom = np.sum(num)
+               num *= h(X)
+               num = np.sum(num)
+
+               return num/denom
+
+          t0, alpha0 = 0, 0
+
+          #Define scipy ODE object
+
+          r = ode(f).set_integrator()
                
-          
