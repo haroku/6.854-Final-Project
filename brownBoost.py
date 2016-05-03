@@ -76,6 +76,11 @@ def brownBoost(X, Y, c, v):
      h_list = np.array(h_list)
      
      def classify(test_X) :
+          classifications = np.array([h(X) for h in h_list ]).T
+          sign_output = np.sum(classifications*alpha_list, axis = 1)
+          return np.sign(sign_output)
+
+     return classify
           
           
 
