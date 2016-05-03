@@ -85,4 +85,5 @@ def label_points(num_dim,num_data, class_noise, noise_type):
 #label_points(3,10,True,"none")
 
 
-
+if __name__ == "__main__":
+  pass

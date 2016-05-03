@@ -45,4 +45,5 @@ def logitboost(X, X_labels, T, v = 0.1):
   return P
 
   
-  
+if __name__ == "__main__":
+  pass  
