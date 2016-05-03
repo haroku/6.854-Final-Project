@@ -18,7 +18,7 @@ def adaboost(num_data, data, labels, num_iters):
 	alpha=[0 for i in xrange(num_iters)]
 	h_t=[]
 	for t in xrange(num_iters):
-		(h,eps_t)=get_weak_learner(t,dist[t],num_data,data,labels)
+		(h,eps_t)=get_weak_learner(dist[t],data,labels)
 		if eps_t==0:
 			return h
 		h_t.append(h)
@@ -26,10 +26,6 @@ def adaboost(num_data, data, labels, num_iters):
 		non_normed=dist[t]*np.exp(-np.apply_along_axis(h,1,data)*labels*alpha[t])
 		normed=non_normed/(np.sum(non_normed))
 		dist.append(normed)
-	#alpha=np.array(alpha)
-	#print alpha
-	#h_t=np.array(h_t)
-	#print h_t
 	H=lambda x: np.sign(sum([alpha[t]*h_t[t](x) for t in xrange(num_iters)]))
 	return H
 
