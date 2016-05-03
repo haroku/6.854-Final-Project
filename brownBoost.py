@@ -17,6 +17,8 @@ def brownBoost(X, Y, c, v):
      num_data, num_dim = X.shape
      time_left = c*1.0
 
+     alpha_list = []
+     h_list = []
      #Initialize matrices
      W = np.zeros((num_data, 1))        #Weight of each example, initialize to 0
      R = np.zeros((num_data, 1))        #Real valued margin for each example; initialize to 0
@@ -28,7 +30,7 @@ def brownBoost(X, Y, c, v):
           h, error = WeakLearn(W_norm, X, Y)
 
           #Solve differential equation
-          def f(t, alpha,c,h,time_left):
+          def dtdalpha(t, alpha):
                #Define differential equation
                num = -1/c*(R + alpha*h(X)*Y+time_left-t)**2
                num = np.exp(num)
@@ -41,6 +43,42 @@ def brownBoost(X, Y, c, v):
           t0, alpha0 = 0, 0
 
           #Define scipy ODE object
+          r = ode(f).set_integrator('vode', method='bdf')
+          r.set_initial_value(t0, alpha0)
 
-          r = ode(f).set_integrator()
+          dalpha = 0.1
+          gamma_big = True
+          t_is_time_left = False
+          
+          while r.successful() and gamma_big and not t_is_time_left:
+               r.integrate(r.alpha+dalpha)
+               if dtdalpha(r.t, r.alpha) <= v:
+                    gamma_big = False
+               if r.t >= time_left:
+                    t_is_time_left = True
+               t = r.t
+               alpha = r.alpha
+
+          
+          #Update prediction values
+          R += alpha*H
+
+          #Update remaining time
+          time_left -= t
+
+          #Keep track of classifiers and related alphas
+          alpha_list.append(alpha)
+          h_list.append(h)
+
+
+     #Final array of classifiers and weights
+     alpha_list = np.array(alpha_list)
+     h_list = np.array(h_list)
+     
+     def classify(test_X) :
+          
+          
+
+               
+     
                
