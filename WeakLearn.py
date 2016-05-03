@@ -26,6 +26,18 @@ def generate_stump(dim):
 	neg =lambda x:-pos(x)
 	return (pos,neg)
 
+'''
+gets the error of a weak learner given a distribution
+'''
+def get_error(weak_learner,data,labels,dist=None):
+	if dist==None:
+		dist=np.array([1/float(len(data)) for i in xrange(len(data))])
+	(num_data,num_dims)=data.shape
+	weak_labels=np.apply_along_axis(weak_learner,1,data)
+	error=np.sum(np.dot((1-labels*weak_labels)/2,dist))
+	return error
+
+
 def get_weak_learner(dist,data,labels):
 	(num_data,num_dims)=data.shape
 	runs=1
@@ -34,13 +46,11 @@ def get_weak_learner(dist,data,labels):
 	for i in xrange(num_dims):
 		for j in xrange(runs):
 			(pos,neg)=generate_stump(i)
-			pos_labels=np.apply_along_axis(pos,1,data)
-			pos_error=np.sum(np.dot((1-labels*pos_labels)/2,dist))
+			pos_error=get_error(pos,data,labels,dist)
 			if pos_error<best_err:
 				best_stump=pos
 				best_err=pos_error
-			neg_labels=np.apply_along_axis(neg,1,data)
-			neg_error=np.sum(np.dot((1-labels*neg_labels)/2,dist))
+			neg_error=get_error(neg,data,labels,dist)
 			if neg_error<best_err:
 				best_stump=neg
 				best_err=neg_error
@@ -54,7 +64,6 @@ if __name__ == "__main__":
   	dist=np.array([1/float(num_data) for i in xrange(num_data)])
   	(stump,err)=get_weak_learner(dist,data,labels)
   	print err
-  	pos_labels=np.apply_along_axis(stump,1,data)
-	pos_error=np.sum(np.dot((1-labels*pos_labels)/2,dist))
-	print pos_error
+  	stump_err=get_error(stump,data,labels,dist)
+	print stump_err
 
