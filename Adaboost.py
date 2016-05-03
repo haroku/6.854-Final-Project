@@ -23,6 +23,12 @@ def get_weak_learner(t,D,m,x,fx):
 #return H[x]
 # example: adaboost(5,np.array([0,1,2,3,4]), np.array([1,-1,-1,1,1]), 7)
 def adaboost(m, x, fx, T):
+	'''
+	m = Number of examples
+	x = Training Set
+	fx = Classification of training data
+	T = num iterations to run Adaboost
+	'''
 	D=[np.array([1.0/m for i in xrange(m)])]
 	alpha=[0 for i in xrange(T)]
 	h_t=[]
