@@ -19,7 +19,7 @@ def adaboost(num_data, data, labels, num_iters):
 	h_t=[]
 	for t in xrange(num_iters):
 		(h,eps_t)=get_weak_learner(dist[t],data,labels)
-		print eps_t
+		print 'error of weak learner round', t, eps_t
 		if eps_t==0:
 			return h
 		h_t.append(h)
@@ -34,6 +34,6 @@ def adaboost(num_data, data, labels, num_iters):
 if __name__ == '__main__':
 	(num_data,num_dim)=(1000,10)
 	from Noise import *
-	(data,labels)=label_points(num_dim,num_data,True,"none",.1)
+	(data,labels)=label_points(num_dim = num_dim,num_data = num_data,class_noise = True,noise_type = "none",p = .1)
 	H=adaboost(num_data,data,labels,20)
-	print get_error(H,data,labels)
+	print 'total error', get_error(H,data,labels)

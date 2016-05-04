@@ -82,6 +82,7 @@ def add_noise(data, point,normal, noise_type, p):
 #if class_noise is true only the labels will be changed
 #if class_noise is true only the points will be changed
 #returns (data,labels)
+#parameter p representing the percent of data to be flipped
 def label_points(num_dim,num_data, class_noise, noise_type, p):
 	(normal, point ,data)=generate_data(num_dim,num_data)
 	#print (normal, point ,data)
