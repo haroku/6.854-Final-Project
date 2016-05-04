@@ -39,7 +39,7 @@ def generate_data(num_dim, num_data):
   normal = np.random.normal(0,1,num_dim)
   
 
-  return (normal, X[-1], X[0:-1])
+  return (normal, X[-1], X[0:-1]) #normal, point, data
   
   
 
