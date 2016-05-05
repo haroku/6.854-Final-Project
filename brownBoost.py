@@ -46,7 +46,7 @@ def brown_boost(data, labels, c, v, prints=False):
           a=r+time_left
           b=np.apply_along_axis(h,1,data)*labels
 
-          (alpha,t)=solve_differential_scipy(a,b,c,v,time_left,gamma_i)
+          (alpha,t)=solve_differential_iterative(a,b,c,v,time_left,gamma_i)
 
           #Update prediction values
           r = r + alpha*b
@@ -202,6 +202,6 @@ if __name__ == '__main__':
      # #print np.apply_along_axis(H,1,data)
      # print "final error", get_error(H,data,labels)
 
-     #100 trials for iterative took 762 seconds       
+     #100 trials for iterative took 762 seconds, average error .0697       
      
                
