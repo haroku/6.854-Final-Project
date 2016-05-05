@@ -55,6 +55,18 @@ def get_weak_learner(dist,data,labels):
 				best_stump=neg
 				best_err=neg_error
 	return (best_stump, best_err)
+'''
+returns a weak learner which ouputs the probability of a label being 1
+'''
+def get_probabilistic_weak_learner(dist,data,labels):
+	(h,err)=get_weak_learner(dist,data,labels)
+	def g(x):
+		out=h(x)
+		if out==1:
+			return 1-err
+		else:
+			return err
+	return (g,err)
 
 
 if __name__ == "__main__":
