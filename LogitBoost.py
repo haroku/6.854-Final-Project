@@ -42,7 +42,7 @@ def logitboost(X, X_labels, T, v = 0.1, K = 2):
   
   R = np.zeros((N,K)) #create R
   for i in xrange(N):
-    R[i,int(X_labels[i])] = 1.0 #set up R_i so r_ik = 1 if yi (x_label) = k
+    R[i,int(X_labels[i]+2)/2] = 1.0 #set up R_i so r_ik = 1 if yi (x_label) = k
 
   for m in xrange(T): #time step iterations
     f = np.zeros((len(X[0]),K)) #the coefficients of the function
@@ -96,10 +96,9 @@ def robust_logitboost(X, X_labels, T, v = 0.1, K = 2):
 
   
 if __name__ == "__main__":
-  import random
-  X_labels = np.zeros((10,1))
-  for i in xrange(len(X_labels)):
-    X_labels[i] = random.randint(0,1) #randomly tag
-  # print X_labels
-  normal, point, data =  generate_data(3,10)
-  P = logitboost(data, X_labels, 10)
+  (num_data,num_dim)=(10,3)
+  from Noise import *
+  (data,labels)=label_points(num_dim,num_data,True,"none",.1)
+  H=logitboost(data,labels,3)
+  #print np.apply_along_axis(H,1,data)
+  print "final error", get_error(H,data,labels)

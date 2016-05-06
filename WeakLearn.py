@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import stats
+from scipy.stats import norm
 
 '''Accepts a distribution and outputs a hypothesis with error < 1/2
 dist is distribution of the data points
@@ -30,7 +30,7 @@ def generate_stump(dim):
 def generate_probabilistic_stump(dim):
 	mean=np.random.normal(0,2)
 	def pos(x):
-		return ppf(x[dim]-mean)
+		return norm.cdf(x[dim]-mean,scale=2)
 	neg =lambda x:1-pos(x)
 	return (pos,neg)
 
@@ -66,7 +66,7 @@ def get_weak_learner(dist,data,labels):
 '''
 returns a weak learner which ouputs the probability of a label being 1
 '''
-def get_probabilistic_weak_learner(dist,data,labels):
+def get_err_weak_learner(dist,data,labels):
 	(h,err)=get_weak_learner(dist,data,labels)
 	def g(x):
 		out=h(x)
@@ -76,6 +76,21 @@ def get_probabilistic_weak_learner(dist,data,labels):
 			return err
 	return (g,err)
 
+def get_probabilistic_weak_learner(dist,data,labels):
+	(num_data,num_dims)=data.shape
+	best_err=-num_data
+	best_stump=lambda x: 1
+	for i in xrange(num_dims):
+		(pos,neg)=generate_probabilistic_stump(i)
+		pos_error=np.dot(np.apply_along_axis(pos,1,data),labels)
+		if pos_error>best_err:
+				best_stump=pos
+				best_err=pos_error
+		neg_error=np.dot(np.apply_along_axis(neg,1,data),labels)
+		if neg_error>best_err:
+			best_stump=neg
+			best_err=neg_error
+	return (best_stump, best_err)
 
 if __name__ == "__main__":
   	from Noise import *
