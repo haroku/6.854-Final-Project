@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import stats
 
 '''Accepts a distribution and outputs a hypothesis with error < 1/2
 dist is distribution of the data points
@@ -24,6 +25,13 @@ def generate_stump(dim):
 		else:
 			return -1
 	neg =lambda x:-pos(x)
+	return (pos,neg)
+
+def generate_probabilistic_stump(dim):
+	mean=np.random.normal(0,2)
+	def pos(x):
+		return ppf(x[dim]-mean)
+	neg =lambda x:1-pos(x)
 	return (pos,neg)
 
 '''
