@@ -92,7 +92,13 @@ def logitboost(X, X_labels, T, v = 0.1, K = 2):
   return P
 
 def robust_logitboost(X, X_labels, T, v = 0.1, K = 2):
-  pass
+  ''' 
+  X is the training data to be classified - numpy array with num_data rows and num_dim dimensions
+  X_labels are the correct labels of X - numpy array with num_data rows and 1 column
+  T is the number of iterations for which to run logitboost
+  v = Shrinkage parameter
+  K = number of labels (default to 2 for binary classification)
+  '''
 
   
 if __name__ == "__main__":
