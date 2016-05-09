@@ -25,6 +25,7 @@ def exp_errs(stdev,data,point,normal):
 #a parameter p representing the percent of data to be flipped
 #returns a noisy version of x
 def add_noise(data, point,normal, noise_type, p):
+	(num_data,num_dim)=data.shape
 	if noise_type=="none":
 		return data
 	if noise_type=="uniform":
@@ -73,6 +74,7 @@ def add_noise(data, point,normal, noise_type, p):
 		(w,h)=np.shape(data)
 		noise=np.random.normal(0,sigma,w*h).reshape(w,h)
 		return noise+data
+		
 
 
 
@@ -86,7 +88,23 @@ def add_noise(data, point,normal, noise_type, p):
 def label_points(num_dim,num_data, class_noise, noise_type, p):
 	(normal, point ,data)=generate_data(num_dim,num_data)
 	#print (normal, point ,data)
-	if class_noise:
+	if noise_type=="contradictory":
+		new=[]
+		for i in xrange(num_data):
+			if np.random.binomial(1,p)==1:
+				new.append(data[i])
+		if len(new)==0:
+			labels=np.sign(np.dot((data-point),normal))
+			return (data,labels)
+		new=np.array(new)
+		#print new
+		labels=np.sign(np.dot((data-point),normal))
+		new_labels=-np.sign(np.dot((new-point),normal))
+		labels=np.append(labels,new_labels)
+		data=np.concatenate((data,new))
+		return (data,labels)
+
+	elif class_noise:
 		#labels_right=np.sign(np.dot((data-point),normal))
 		noisy_data=add_noise(data, point, normal, noise_type, p)
 		labels=np.sign(np.dot((noisy_data-point),normal))
@@ -117,7 +135,7 @@ def uniform_atr_noise(data, thresh, attrs):
 	
 
 if __name__ == "__main__":
-  (data,labels) = label_points(10,1000,True,"gaussian", .2)
-  #print (data,labels)
+  (data,labels) = label_points(3,10,True,"contradictory", .2)
+  print (data,labels)
 
 
