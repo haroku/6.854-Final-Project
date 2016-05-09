@@ -97,9 +97,24 @@ def label_points(num_dim,num_data, class_noise, noise_type, p):
 		out_data=add_noise(data,point, normal, noise_type, p)
 		return (out_data,labels)
 
+###GENERATE GAUSSIAN ATTRIBUTE NOISE
 
-
-
+def gaussian_attr_noise(data, thresh, attrs):
+	'''
+	Adds Gaussian attribute noise to a data set by selecting an attribute
+	from a list of attributes attrs	and selecting, at random, some proportion,
+	thresh, of data points to which we add Gaussian noise centered around N(0,1)
+	'''
+	
+###GENERATE UNIFORM ATTRIBUTE NOISE
+def uniform_atr_noise(data, thresh, attrs):
+	'''
+	Adds uniform attribute noise to a data set by selecting an attribute
+	from a list of attributes attrs, and selecting at random some proportion,
+	thresh, of data points to which we randomly reassign a value chosen at uniform 
+	within the domain of that attribute.
+	'''
+	
 
 if __name__ == "__main__":
   (data,labels) = label_points(10,1000,True,"gaussian", .2)
