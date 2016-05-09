@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import ode
 from WeakLearn import *
 from scipy import special
+from Adaboost import *
 
 '''
 Implements the brownBoost algorithm as described in:
@@ -27,10 +28,12 @@ def brown_boost(data, labels, c, v, prints=False):
      r = np.zeros(num_data)        #Real valued margin for each example; initialize to 0
      roundn=0
      while time_left > 0:
-          roundn +=1
+          
           if prints:
                print "time_left", time_left
                print "round" , roundn
+               H = lambda x: np.sign(sum([alpha_list[t]*h_list[t](x) for t in xrange(roundn)]))
+               #print "cumulative error", get_error(H,data,labels)
           #Associate with each example a positive weight
           W = np.exp(-(r+time_left)**2/c)
           W_norm = W/np.sum(W)                #Normalized distribution of weights
@@ -57,11 +60,7 @@ def brown_boost(data, labels, c, v, prints=False):
           #Keep track of classifiers and related alphas
           alpha_list.append(alpha)
           h_list.append(h)
-
-
-     #Final array of classifiers and weights
-     #alpha_list = np.array(alpha_list)
-     #h_list = np.array(h_list)
+          roundn +=1
 
      num_iters=len(h_list)
      if prints:
@@ -107,7 +106,7 @@ def solve_differential_iterative(a,b,c,v,s,gamma_i):
      alpha=0
      t=0
      gamma=gamma_i
-     dx=.01
+     dx=s**.5/10
      while(t<s and gamma >v):
           (alpha,t,gamma)=iterative_step(alpha,t,a,b,c,v,dx,gamma)
      if alpha<0:
@@ -175,33 +174,43 @@ def solve_differential_scipy(a,b,c,v,time_left,gamma_i):
           t = r.t
           #print 'in while loop'
      return alpha,t
-          
+
+
+def choose_c(data,labels,v):
+     
+     A=adaboost(data,labels,20)
+     ada_err=get_error(A,data,labels)
+     c=scipy.special.erfinv(1-ada_err)**2
+     print c
+     
           
 if __name__ == '__main__':
      import time
      start_time=time.time()
      sum_error=0
-     for i in xrange(100):
+     for i in xrange(10):
           (num_data,num_dim)=(1000,10)
           from Noise import *
           (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-          H=brown_boost(data,labels,1,.1)
+          H=brown_boost(data,labels,1.5,.1)
           print "i", i
           err=get_error(H,data,labels)
           print "final error", err
           sum_error+=err
      total_time=time.time()-start_time
      print "total_time", total_time
-     print "average_time", total_time/100.0
+     print "average_time", total_time/10.0
      print "total_error", sum_error
 
      # (num_data,num_dim)=(1000,10)
      # from Noise import *
      # (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-     # H=brown_boost(data,labels,1,.1)
+     # #choose_c(data,labels,.1)
+     # H=brown_boost(data,labels,1.5,.1, True)
      # #print np.apply_along_axis(H,1,data)
+     
      # print "final error", get_error(H,data,labels)
 
-     #100 trials for iterative took 762 seconds, average error .0697       
+     #100 trials for iterative took 762 seconds, average error .0697, c=1    
      
                
