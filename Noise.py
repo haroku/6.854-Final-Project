@@ -116,6 +116,20 @@ def label_points(num_dim,num_data, class_noise, noise_type, p):
 		out_data=add_noise(data,point, normal, noise_type, p)
 		return (out_data,labels)
 
+###GENERATE MISLABELLED CLASS NOISE
+
+def mislabel_class(data, label, prop):
+	'''
+	Mislabels some proportion, prop, of the original data set
+	'''
+	num_data, num_dim = data.shape
+	
+	num_contradictory = int(num_data*prop)
+	#Generate a list of random indices into data set
+	indices = random.sample(range(0, num_data), num_contradictory)
+	for i in indices:
+		label[i] = -label[i]
+	return (data, label)
 ###GENERATE CONTRADICTORY LABEL CLASS NOISE
 
 def contradictory_class(data, labels, prop):
