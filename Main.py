@@ -57,7 +57,7 @@ data_set = {'artificial_data': [artificial_data,artificial_labels],
 pickle.dump( data_set, open( "datasets.p", "wb" ) )
 
 def run_trials(data, labels, num_iters, v):
-
+    
 	train_amt = 700
 	num_data, num_dim = data.shape
 	training_data = data[0:train_amt]
@@ -79,6 +79,7 @@ def run_trials(data, labels, num_iters, v):
 
 	for i in range(num_trials):
 		#Train algorithms on training data
+		print 'i', i
 
 		adaboost_classifier, ada_error = ab.adaboost(training_data, training_labels, num_iters)
 		logitboost_classifier, logit_error = lb.logitboost(training_data, training_labels, num_iters)
@@ -89,21 +90,21 @@ def run_trials(data, labels, num_iters, v):
 		logit_train_errors.append(logit_error)
 		brown_train_errors.append(brown_error)
 		#savage_train_errors.append(savage_error)
-		print 'Doing some cool things'
+		#print 'Doing some cool things'
 		#Run on validation set and report error
 
 		ada_test_error = wl.get_error(adaboost_classifier, test_data, test_labels)
 		logit_test_error = wl.get_error(logitboost_classifier, test_data, test_labels)
 		brown_test_error = wl.get_error(brownboost_classifier, test_data, test_labels)
 		#savage_test_error = get_error(savageboost_classifier, test_data, test_labels)
-
+		print "test erros", ada_test_error, logit_test_error, brown_test_error
 		ada_test_errors.append(ada_test_error)
 		logit_test_errors.append(logit_test_error)
 		brown_test_errors.append(brown_test_error)
 		#savage_test_errors.append(savage_test_error)
 
-  	return (ada_test_errors, logit_test_errors, brown_test_errors, ada_train_errors, logit_train_errors, brown_train_errors)
-  
+	return (ada_test_errors, logit_test_errors, brown_test_errors, ada_train_errors, logit_train_errors, brown_train_errors)
+	
 # RUN TRIALS FOR EACH TYPE OF NOISE
 
 for noise_type in data_set.keys():

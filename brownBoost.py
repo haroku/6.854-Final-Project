@@ -33,7 +33,7 @@ def brown_boost(data, labels, c, v, prints=False):
      errors=[]
      while time_left > 0:
           if len(t_list)>3:
-               if time_left==t_list[-4]:
+               if time_left>=t_list[-4]:
                     return None
           if prints:
                print "time_left", time_left
@@ -42,10 +42,12 @@ def brown_boost(data, labels, c, v, prints=False):
                #print "cumulative error", get_error(H,data,labels)
           #Associate with each example a positive weight
           W = np.exp(-(r+time_left)**2/c)
-          try: 
-               W_norm = W/np.sum(W)                #Normalized distribution of weights
-          except RuntimeWarning:
-               print 'RuntimeError on W_norm: ', W
+          if np.sum(W)<.00000001:
+               print "r",r
+               print "W",W
+               print "time_left", time_left
+               print "c",c
+          W_norm = W/np.sum(W)                #Normalized distribution of weights
           h, error = get_weak_learner(W_norm, data, labels)
 
           gamma_i = 1-2*error
@@ -165,17 +167,16 @@ def binary_choose_c(data,labels,v):
      last_success=(A,errors)
      c=scipy.special.erfinv(1-ada_err)**2
      #print "adaboost finished", c
-     H=brown_boost(data,labels,c,v)
      min_c=0.0
-     max_c=2.0*c
-     while H!=None:
+     max_c=2*c
+     H=brown_boost(data,labels,c,v)
+     while H!=None and c<5:
           last_success=H
           c=2*c
           H=brown_boost(data,labels,c,v)
      max_c=c
      c=c/2.0
      #print "binary search init",c
-
      while (max_c-min_c)>.1:
           H=brown_boost(data,labels,c,v)
           if H==None:
@@ -190,33 +191,23 @@ def binary_choose_c(data,labels,v):
      
           
 if __name__ == '__main__':
-     # import time
-     # start_time=time.time()
-     # sum_error=0
-     # for i in xrange(10):
-     #      (num_data,num_dim)=(1000,10)
-     #      from Noise import *
-     #      (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-     #      H=brown_boost(data,labels,1.5,.1)
-     #      print "i", i
-     #      err=get_error(H,data,labels)
-     #      print "final error", err
-     #      sum_error+=err
-     # total_time=time.time()-start_time
-     # print "total_time", total_time
-     # print "average_time", total_time/10.0
-     # print "total_error", sum_error
-
-     (num_data,num_dim)=(1000,10)
      from Noise import *
-     (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-     #choose_c(data,labels,.1)
-     #H,errors=brown_boost(data,labels,1.5,.1, True)
-     (H,errors)=binary_choose_c(data,labels,.1)
-     #print np.apply_along_axis(H,1,data)
-     
-     print "final error", get_error(H,data,labels)
+     num_dim = 15
+     num_data = 1000
+     train_amt = 700
+     total_amt = num_data
+     num_iters=100
 
-     #100 trials for iterative took 762 seconds, average error .0697, c=1    
+     artificial_data,labels, pt = label_points(num_dim,num_data)
+     training_data = artificial_data[0:train_amt]
+     training_labels = labels[0:train_amt]
+     
+     adaboost_classifier, ada_error = binary_choose_c(training_data,training_labels, .1)
+     print ada_error
+     test_data = artificial_data[train_amt: total_amt]
+     test_labels = labels[train_amt: total_amt]
+
+     ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
+     print ada_test_error
      
                

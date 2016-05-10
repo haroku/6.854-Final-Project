@@ -63,3 +63,5 @@ if __name__ == '__main__':
 
 	ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
 	print ada_test_error
+
+	

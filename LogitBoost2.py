@@ -25,10 +25,11 @@ def logitboost(data, labels, num_iter):
 		F_x=np.apply_along_axis(F,1,data)
 
 		p=np.exp(F_x)/(np.exp(F_x)+np.exp(-F_x))
+		p=np.minimum(.9999,np.maximum(.0001,p))
 		f_m.append(h)
 		out=out + np.apply_along_axis(h,1,data)
 		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
-		if len(errors>10):
+		if len(errors)>10:
 			if -errors[-1]+sum(errors[-11:-1])/5.0<.000001:
 				return (lambda x:np.sign(sum([f_m[t](x) for t in xrange(i)])),errors)
 
@@ -57,9 +58,22 @@ def get_least_square_error(f,data,w,z):
 	return np.dot(w,(f_x-z)**2)
 
 if __name__ == "__main__":
-	(num_data,num_dim)=(1000,10)
 	from Noise import *
-	(data,labels)=label_points(num_dim = num_dim,num_data = num_data,class_noise = True,noise_type = "none",p = .1)
-	H,errors=logitboost(data,labels,10)
-	print "total error", get_error(H,data,labels)
+	num_dim = 15
+	num_data = 1000
+	train_amt = 700
+	total_amt = num_data
+	num_iters=100
+
+	artificial_data,labels, pt = label_points(num_dim,num_data)
+	training_data = artificial_data[0:train_amt]
+	training_labels = labels[0:train_amt]
+	
+	adaboost_classifier, ada_error = logitboost(training_data, training_labels, num_iters)
+	print ada_error
+	test_data = artificial_data[train_amt: total_amt]
+	test_labels = labels[train_amt: total_amt]
+
+	ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
+	print ada_test_error
 
