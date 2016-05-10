@@ -84,7 +84,6 @@ def run_trials(data, labels, num_iters, v):
 		logitboost_classifier, logit_error = lb.logitboost(training_data, training_labels, num_iters)
 		brownboost_classifier, brown_error = bb.binary_choose_c(training_data, training_labels, v)
 		#savageboost_classifier, savage_error =  savageboost(training_data, training_labels, num_iter)
-		print ada_error
 
 		ada_train_errors.append(ada_error)
 		logit_train_errors.append(logit_error)
@@ -110,12 +109,12 @@ def run_trials(data, labels, num_iters, v):
 for noise_type in data_set.keys():
 	dataset = data_set[noise_type]
 	data, labels = dataset[0], dataset[1]
-	ada_test_errors, logit_test_errors, brown_test_errors, ada_train_errors, logit_train_errors, brown_train_errors = run_trials(data, labels, num_iters, .1)
+	ada_test_errors, logit_test_errors, brown_test_errors, ada_train_errors, logit_train_errors, brown_train_errors = run_trials(data, labels, 150, .1)
 
 	errors = {'ada_test_errors': ada_test_errors, 'logit_test_errors': logit_test_errors,
 					'brown_test_errors': brown_test_errors, 'ada_train_errors': ada_train_errors,
 					'logit_train_errors': logit_train_errors, 'brown_train_errors': brown_train_errors}
 
-	pickle.dump(noise_free_errors, open( str(noise_type)+"noise_free_errors.p", "wb" ) )
+	pickle.dump(errors, open( str(noise_type)+"errors.p", "wb" ) )
 
 
