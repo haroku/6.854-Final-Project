@@ -16,17 +16,19 @@ from Adaboost import *
 #4. Compare classifiers performance on validation set
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-training_data = 
+artificial_data, labels = 
+training_data = artificial_data[:,]
+test_data = a
 
 #Train algorithms on training data
 
-adaboost_classifier =
-logitboost_classifier =
-brownboost_classifier =
-savageboost_classifier = 
+adaboost_classifier, (ada_error, ada_iters) =
+logitboost_classifier, (logit_error, logit_iters) =
+brownboost_classifier, (brown_error, brown_iters) =
+#savageboost_classifier = 
 
 #Plot training error of each classifier on training set after this many interations
+
 
 #Run on validation set and report error
 
@@ -36,3 +38,8 @@ savageboost_classifier =
 # 2. Add different thresholds of Gaussian noise
 # 3. Training 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+gaussian_noise, gaussian_labels = generate_noise(artificial_data, labels, noise_type = 'gaussian')
+uniform_noise, uniform_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
+mislabel_noise, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
+mislabel_noise, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')

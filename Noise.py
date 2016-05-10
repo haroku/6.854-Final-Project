@@ -2,6 +2,7 @@ import numpy as np
 from Data import *
 import scipy
 from scipy import stats
+import random 
 
 #Data.generate_data returns a normal vector, point on the plane and a matrix of data points 
 #as (normal, point, data) 
@@ -115,25 +116,77 @@ def label_points(num_dim,num_data, class_noise, noise_type, p):
 		out_data=add_noise(data,point, normal, noise_type, p)
 		return (out_data,labels)
 
+###GENERATE MISLABELLED CLASS NOISE
+
+def mislabel_class(data, label, prop):
+	'''
+	Mislabels some proportion, prop, of the original data set
+	'''
+	num_data, num_dim = data.shape
+	
+	num_contradictory = int(num_data*prop)
+	#Generate a list of random indices into data set
+	indices = random.sample(range(0, num_data), num_contradictory)
+	for i in indices:
+		label[i] = -label[i]
+	return (data, label)
+###GENERATE CONTRADICTORY LABEL CLASS NOISE
+
+def contradictory_class(data, labels, prop):
+	'''
+	Replaces some proportion prop of the dataset with mislabelled duplicates
+	of prop other randomly chosen data points
+	'''
+	num_data, num_dim = data.shape
+	
+	num_contradictory = int(num_data*prop)
+	#Generate a list of random indices into data set
+	indices = random.sample(range(0, num_data), num_contradictory)
+	for i in indices:
+		data[i] = data[i+1]
+		#Duplicate data point
+		label[i] = -label[i+1]
+		#Mislabel duplicate copy
+	return (data, labels)
+
+
 ###GENERATE GAUSSIAN ATTRIBUTE NOISE
 
-def gaussian_attr_noise(data, thresh, attrs):
+def gaussian_attr_noise(data, prop, attr, labels):
 	'''
 	Adds Gaussian attribute noise to a data set by selecting an attribute
-	from a list of attributes attrs	and selecting, at random, some proportion,
-	thresh, of data points to which we add Gaussian noise centered around N(0,1)
+	and selecting, at random, some proportion, prop, of data points to which
+	we add Gaussian noise centered around N(0,sigma)
 	'''
+
+	num_data, num_dim = data.shape
+	sigma = abs(numpy.random.normal(1,1))
+	num_noisy = int(num_data*prop)
+	#Generate a list of random indices into data set
+	indices = random.sample(range(0, num_data), num_contradictory)
+	#Choose num_noisy data points to re-assign uniform values to	
+	for i in indices:
+		data[i,attr] += numpy.random.normal(0,sigma)
+	return data, labels
+	
 	
 ###GENERATE UNIFORM ATTRIBUTE NOISE
-def uniform_atr_noise(data, thresh, attrs):
+def uniform_attr_noise(data, attr, prop, point, labels):
 	'''
 	Adds uniform attribute noise to a data set by selecting an attribute
-	from a list of attributes attrs, and selecting at random some proportion,
-	thresh, of data points to which we randomly reassign a value chosen at uniform 
-	within the domain of that attribute.
+	and selecting at random some proportion, prop, of data points to which 
+	we randomly reassign a value chosen at uniform 	within the domain of that attribute.
 	'''
-	
-
+	num_data, num_dim = data.shape
+	centre = point[attr]
+	num_noisy = int(num_data*prop)
+	#Generate a list of random indices into data set
+	indices = random.sample(range(0, num_data), num_contradictory)
+	#Choose num_noisy data points to re-assign uniform values to
+	for i in indices:
+		data[i,attr] = np.random.uniform(centre-1, centre+1)
+	return (data, labels)
+		
 if __name__ == "__main__":
   (data,labels) = label_points(3,10,True,"contradictory", .2)
   print (data,labels)
