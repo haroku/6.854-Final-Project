@@ -32,7 +32,7 @@ def adaboost(data, labels, num_iters):
 		normed=non_normed/(np.sum(non_normed))
 		dist.append(normed)
 		out=out+alpha[t]*np.apply_along_axis(h,1,data)
-		errors.append(np.sum((1-np.sign(outs)*labels)/2)/float(num_data))
+		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
 
 
 
@@ -41,10 +41,21 @@ def adaboost(data, labels, num_iters):
 
 
 if __name__ == '__main__':
-	(num_data,num_dim)=(50,3)
-	print num_data
 	from Noise import *
-	(data,labels)=label_points(num_dim = num_dim,num_data = num_data,class_noise = True,noise_type = "none",p = .1)
-	(H,errors)=adaboost(data,labels,20)
-	# print 'labels', labels
-	print 'total error', get_error(H,data,labels)
+	num_dim = 15
+	num_data = 1000
+	train_amt = 700
+	total_amt = num_data
+	num_iters=20
+
+	artificial_data,labels, pt = label_points(num_dim,num_data)
+	training_data = artificial_data[0:train_amt]
+	training_labels = labels[0:train_amt]
+	
+	adaboost_classifier, ada_error = adaboost(training_data, training_labels, num_iters)
+	
+	test_data = artificial_data[train_amt: total_amt]
+	test_labels = labels[train_amt: total_amt]
+
+	ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
+	print ada_test_error

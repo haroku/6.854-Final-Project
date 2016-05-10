@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import ode
 from WeakLearn import *
 from scipy import special
+import scipy
 from Adaboost import *
 
 '''
@@ -161,7 +162,7 @@ def binary_choose_c(data,labels,v):
           return A
      last_success=(A,errors)
      c=scipy.special.erfinv(1-ada_err)**2
-     print "adaboost finished", c
+     #print "adaboost finished", c
      H=brown_boost(data,labels,c,v)
      min_c=0.0
      max_c=2.0*c
@@ -171,7 +172,7 @@ def binary_choose_c(data,labels,v):
           H=brown_boost(data,labels,c,v)
      max_c=c
      c=c/2.0
-     print "binary search init",c
+     #print "binary search init",c
 
      while (max_c-min_c)>.1:
           H=brown_boost(data,labels,c,v)
@@ -181,7 +182,7 @@ def binary_choose_c(data,labels,v):
                last_success=H
                min_c=c
           c=(max_c+min_c)/2.0
-          print c
+          #print c
      c=min_c
      return last_success
      

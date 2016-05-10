@@ -16,6 +16,7 @@ def logitboost(data, labels, num_iter):
 	f_m=[]
 	F=lambda x:0
 	errors=[]
+	out=np.zeros(num_data)
 	for i in xrange(num_iter):
 		z=(y-p)/(p*(1-p))
 		w=p*(1-p)
@@ -26,9 +27,9 @@ def logitboost(data, labels, num_iter):
 		p=np.exp(F_x)/(np.exp(F_x)+np.exp(-F_x))
 		f_m.append(h)
 		out=out + np.apply_along_axis(h,1,data)
-		errors.append(np.sum((1-np.sign(outs)*labels)/2)/float(num_data))
+		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
 
-	return lambda x:np.sign(sum([f_m[i](x) for i in xrange(num_iter)]))
+	return (lambda x:np.sign(sum([f_m[i](x) for i in xrange(num_iter)])),errors)
 
 
 
