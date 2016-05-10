@@ -23,12 +23,16 @@ def brown_boost(data, labels, c, v, prints=False):
 
      alpha_list = []
      h_list = []
+     t_list=[]
      #Initialize matrices
      W = np.zeros(num_data)        #Weight of each example, initialize to 0
      r = np.zeros(num_data)        #Real valued margin for each example; initialize to 0
      roundn=0
+     errors=[]
      while time_left > 0:
-          
+          if len(t_list)>3:
+               if time_left==t_list[-4]:
+                    return None
           if prints:
                print "time_left", time_left
                print "round" , roundn
@@ -60,14 +64,17 @@ def brown_boost(data, labels, c, v, prints=False):
           #Keep track of classifiers and related alphas
           alpha_list.append(alpha)
           h_list.append(h)
+          t_list.append(time_left)
           roundn +=1
+          H= lambda x: np.sign(sum([alpha_list[t]*h_list[t](x) for t in xrange(roundn)]))
+          errors.append(get_error(H,data,labels))
 
      num_iters=len(h_list)
      if prints:
           print alpha_list
      H = lambda x: np.sign(sum([alpha_list[t]*h_list[t](x) for t in xrange(num_iters)]))
      
-     return H
+     return (H,errors)
 '''
 solves the differential equation
 given a,b,c, v, gamma_i
@@ -86,9 +93,9 @@ def solve_differential(a,b,c,v,s,gamma_i):
      num=np.sum(np.exp(-(a+alpha*b-t)**2/float(c))*b)
      dem=np.sum(np.exp(-(a+alpha*b-t)**2/float(c)))
      gamma=num/float(dem)
-     print 'NUM',num
-     print 'DEM',dem
-     print gamma,alpha,t
+     #print 'NUM',num
+     #print 'DEM',dem
+     #print gamma,alpha,t
      while abs(gamma)>v:
           (alpha,t)=step(alpha,t,a,b,c)
           if alpha<0 or t<0 or t>(2*s):
@@ -106,7 +113,7 @@ def solve_differential_iterative(a,b,c,v,s,gamma_i):
      alpha=0
      t=0
      gamma=gamma_i
-     dx=s**.5/10
+     dx=c/100.0
      while(t<s and gamma >v):
           (alpha,t,gamma)=iterative_step(alpha,t,a,b,c,v,dx,gamma)
      if alpha<0:
@@ -145,71 +152,66 @@ def step(alpha,t,a,b,c):
      t_next=t+(c*B**2+(np.pi*c)**.5*V*E)/float(2*(V*W-U*B))
      return (alpha_next,t_next)
 
-def solve_differential_scipy(a,b,c,v,time_left,gamma_i):
-     #Solve differential equation
-     def dydt(alpha, t):
-          #Define differential equation
-          num=np.sum(np.exp(-(a+alpha*b-t)**2/float(c))*b)
-          denom=np.sum(np.exp(-(a+alpha*b-t)**2/float(c)))
-
-          return 1/max(num/float(denom),v/2.0)
-
-     alpha,t = 0, 0
-
-     #Define scipy ODE object
-     r = ode(dydt).set_integrator('vode', method='bdf')
-     r.set_initial_value(alpha,t)
-
-     dt = 0.01
-     gamma_big = True
-     t_is_time_left = False
-     
-     while r.successful() and gamma_big and not t_is_time_left:
-          r.integrate(r.t+dt)
-          if (1/dydt(r.y, r.t)) <= v:
-               gamma_big = False
-          if r.t >= time_left:
-               t_is_time_left = True
-          alpha = r.y
-          t = r.t
-          #print 'in while loop'
-     return alpha,t
-
-
-def choose_c(data,labels,v):
+def binary_choose_c(data,labels,v):
      
      A=adaboost(data,labels,20)
      ada_err=get_error(A,data,labels)
+     if ada_err==0:
+          return A
+     last_success=A
      c=scipy.special.erfinv(1-ada_err)**2
-     print c
+     #print "adaboost finished", c
+     H=brown_boost(data,labels,c,v)
+     min_c=0.0
+     max_c=2.0*c
+     while H!=None:
+          last_success=H
+          c=2*c
+          H=brown_boost(data,labels,c,v)
+     max_c=c
+     c=c/2.0
+     #print "binary search init",c
+
+     while (max_c-min_c)>.1:
+          H=brown_boost(data,labels,c,v)
+          if H==None:
+               max_c=c
+          else:
+               H=last_success
+               min_c=c
+          c=(max_c+min_c)/2.0
+          #print c
+     c=min_c
+     return last_success
      
           
 if __name__ == '__main__':
-     import time
-     start_time=time.time()
-     sum_error=0
-     for i in xrange(10):
-          (num_data,num_dim)=(1000,10)
-          from Noise import *
-          (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-          H=brown_boost(data,labels,1.5,.1)
-          print "i", i
-          err=get_error(H,data,labels)
-          print "final error", err
-          sum_error+=err
-     total_time=time.time()-start_time
-     print "total_time", total_time
-     print "average_time", total_time/10.0
-     print "total_error", sum_error
+     # import time
+     # start_time=time.time()
+     # sum_error=0
+     # for i in xrange(10):
+     #      (num_data,num_dim)=(1000,10)
+     #      from Noise import *
+     #      (data,labels)=label_points(num_dim,num_data,True,"none",.1)
+     #      H=brown_boost(data,labels,1.5,.1)
+     #      print "i", i
+     #      err=get_error(H,data,labels)
+     #      print "final error", err
+     #      sum_error+=err
+     # total_time=time.time()-start_time
+     # print "total_time", total_time
+     # print "average_time", total_time/10.0
+     # print "total_error", sum_error
 
-     # (num_data,num_dim)=(1000,10)
-     # from Noise import *
-     # (data,labels)=label_points(num_dim,num_data,True,"none",.1)
-     # #choose_c(data,labels,.1)
-     # H=brown_boost(data,labels,1.5,.1, True)
-     # #print np.apply_along_axis(H,1,data)
+     (num_data,num_dim)=(1000,10)
+     from Noise import *
+     (data,labels)=label_points(num_dim,num_data,True,"none",.1)
+     #choose_c(data,labels,.1)
+     #H=brown_boost(data,labels,1.5,.1, True)
+     H=binary_choose_c(data,labels,.1)
+     #print np.apply_along_axis(H,1,data)
      
-     # print "final error", get_error(H,data,labels)
+     print "final error", get_error(H,data,labels)
 
      #100 trials for iterative took 762 seconds, average error .0697, c=1    
      

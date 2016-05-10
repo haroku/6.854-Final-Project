@@ -16,12 +16,13 @@ def adaboost(data, labels, num_iters):
 	'''
 	(num_data,num_dim)=data.shape
 	dist=[np.array([1.0/num_data for i in xrange(num_data)])]
-	print dist
+	#print dist
 	alpha=[0 for i in xrange(num_iters)]
 	h_t=[]
+	errors=[]
 	for t in xrange(num_iters):
 		(h,eps_t)=get_weak_learner(dist[t],data,labels)
-		print 'error of weak learner round', t, eps_t
+		#print 'error of weak learner round', t, eps_t
 		if eps_t==0: #we have a perfect fit
 			return h
 		h_t.append(h)
@@ -29,8 +30,13 @@ def adaboost(data, labels, num_iters):
 		non_normed=dist[t]*np.exp(-np.apply_along_axis(h,1,data)*labels*alpha[t])
 		normed=non_normed/(np.sum(non_normed))
 		dist.append(normed)
+		H=lambda x: np.sign(sum([alpha[i]*h_t[i](x) for i in xrange(t+1)]))
+		errors.append(get_error(H,data,labels))
+
+
+
 	H=lambda x: np.sign(sum([alpha[t]*h_t[t](x) for t in xrange(num_iters)]))
-	return H
+	return (H,errors)
 
 
 if __name__ == '__main__':

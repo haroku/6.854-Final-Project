@@ -31,7 +31,7 @@ def savageboost(data, labels, M):
 		dist=np.minimum(np.maximum(dist,.00000001),100000000)
 		dist=dist/float(sum(dist))
 		#print sum(dist)
-	#print g	
+	#print g
 	def out(x):
 		#print [g[i](x) for i in xrange(M)]
 		return np.sign(sum([g[i](x) for i in xrange(M)]))
