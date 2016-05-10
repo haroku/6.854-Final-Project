@@ -11,7 +11,7 @@ from Adaboost import *
 #DATA SET WITHOUT NOISE
 #1. Generate data set without noise
 #2. Set aside 2/3 for validation
-#3. Train 4 algorithms on test data 
+#3. Train algorithms on test data 
 #3b. Plot test error versus iteration 
 #4. Compare classifiers performance on validation set
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,7 +21,7 @@ num_data = 1000
 train_amt = 700
 total_amt = num_data
 
-artificial_data, labels = generate_data(num_dim, num_data)
+normal, point, artificial_data = generate_data(num_dim, num_data)
 training_data = artificial_data[0:train_amt]
 training_labels = labels[0:train_amt]
 
