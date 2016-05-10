@@ -11,7 +11,7 @@ from Adaboost import *
 #DATA SET WITHOUT NOISE
 #1. Generate data set without noise
 #2. Set aside 2/3 for validation
-#3. Train 4 algorithms on test data 
+#3. Train algorithms on test data 
 #3b. Plot test error versus iteration 
 #4. Compare classifiers performance on validation set
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
