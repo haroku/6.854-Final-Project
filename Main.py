@@ -17,15 +17,33 @@ from Adaboost import *
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 artificial_data, labels = 
-training_data = artificial_data[:,]
-test_data = a
+training_data = artificial_data[0:700]
+test_data = artificial_data[700:100]
+
+gaussian_data, gaussian_labels = generate_noise(artificial_data, labels, noise_type = 'gaussian')
+uniform_data, uniform_labels = generate_noise(artificial_data, labels, noise_type = 'uniform')
+mislabel_data, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
+contradict_data, contradict_labels = generate_noise(artificial_data, labels, noise_type = 'contradict')
+
+gaussian_train = gaussian_data[0:700]
+gaussian_test = gaussian_test[700,1000]
+
+uniform_train = uniform_data[0:700]
+uniform_test = uniform_data[700:1000]
+
+mislabel_train = mislabel_data[0:700]
+mislabel_test = mislabel_data[700:1000]
+
+contradict_train = contradict_date[0:700]
+contradict_test = contradict_data[700:1000]
 
 #Train algorithms on training data
 
-adaboost_classifier, (ada_error, ada_iters) =
-logitboost_classifier, (logit_error, logit_iters) =
-brownboost_classifier, (brown_error, brown_iters) =
-#savageboost_classifier = 
+adaboost_classifier, ada_error=
+logitboost_classifier, logit_error =
+brownboost_classifier, brown_error =
+
+#savageboost_classifier, savage_error = 
 
 #Plot training error of each classifier on training set after this many interations
 
@@ -39,7 +57,4 @@ brownboost_classifier, (brown_error, brown_iters) =
 # 3. Training 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-gaussian_noise, gaussian_labels = generate_noise(artificial_data, labels, noise_type = 'gaussian')
-uniform_noise, uniform_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
-mislabel_noise, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
-mislabel_noise, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
+
