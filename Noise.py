@@ -89,35 +89,10 @@ def add_noise(data, point,normal, noise_type, p):
 #if class_noise is true only the points will be changed
 #returns (data,labels)
 #parameter p representing the percent of data to be flipped
-def label_points(num_dim,num_data, class_noise, noise_type,p):
+def label_points(num_dim,num_data):
 	(normal, point ,data)=generate_data(num_dim,num_data)
-	#print (normal, point ,data)
-	if noise_type=="contradictory":
-		new=[]
-		for i in xrange(num_data):
-			if np.random.binomial(1,p)==1:
-				new.append(data[i])
-		if len(new)==0:
-			labels=np.sign(np.dot((data-point),normal))
-			return (data,labels)
-		new=np.array(new)
-		#print new
-		labels=np.sign(np.dot((data-point),normal))
-		new_labels=-np.sign(np.dot((new-point),normal))
-		labels=np.append(labels,new_labels)
-		data=np.concatenate((data,new))
-		return (data,labels)
-
-	elif class_noise:
-		#labels_right=np.sign(np.dot((data-point),normal))
-		noisy_data=add_noise(data, point, normal, noise_type, p)
-		labels=np.sign(np.dot((noisy_data-point),normal))
-		#print (num_data-np.dot(labels_right,labels))/(2.0*num_data)
-		return (data,labels)
-	else:
-		labels=np.sign(np.dot((data-point),normal))
-		out_data=add_noise(data,point, normal, noise_type, p)
-		return (out_data,labels)
+	labels=np.sign(np.dot((data-point),normal))
+	return (data,labels,point)
 
 
 ###GENERAL CODE FOR GENERATING NOISE
@@ -128,14 +103,16 @@ def generate_noise(o_data, o_labels, noise_type, prop, point):
 	elif noise_type = 'contradict':
 		return contradictory_class(data, labels, prop)
 	elif noise_type = 'gaussian':
-		#Choose the attributes to modify
-		
+		#Choose attributes to modify
+		num_attrs = 3
+		attr_list = random.sample(range(0, num_dimensions), num_attrs)
 		for attr in attr_list:
 			o_data, o_labels = gaussian_attr_noise(o_data, o_labels, prop, attr)
 		return o_data, o_labels
 	elif noise_type = 'uniform':
 		#Choose attributes to modify
-		
+		num_attrs = 3
+		attr_list = random.sample(range(0, num_dimensions), num_attrs)
 		for attr in attr_list:
 			o_data, o_labels = uniform_attr_noise(data, labels, attr, prop, point)
 		return o_data, o_labels
