@@ -21,7 +21,7 @@ num_data = 1000
 train_amt = 700
 total_amt = num_data
 
-artificial_data, labels = generate_data(num_dim, num_data)
+normal, point, artificial_data = generate_data(num_dim, num_data)
 training_data = artificial_data[0:train_amt]
 training_labels = labels[0:train_amt]
 
