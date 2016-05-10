@@ -5,6 +5,7 @@ import numpy as np
 #Data is formatted as (normal, point, data) 
 #normal is the normal to the plane, represented as a length num_dim np array
 #point is a point the plane passes through, represented as a length num_dim np array
+#the normal and the point define the classifier that will split the data
 #data is a matrix of data points, each row of data is a datapoint of length num_dim
 '''
 
@@ -20,15 +21,15 @@ def generate_data(num_dim, num_data):
   mu_means = 0
   sigma_means = 1
   
-  means = np.random.normal(mu_means, sigma_means, num_dim)
-  #print means
+  means = np.random.normal(mu_means, sigma_means, num_dim) #generates num dum number of gaussian random normal outputs
+  # print 'means', means
   #Generate means numpy array
   mu_stdev = 1
   sigma_stdev = 1
   
   stdev = np.random.normal(mu_stdev, sigma_stdev, num_dim)
   stdev = np.absolute(stdev)
-  #print stdev
+  # print 'stdev', stdev
   
   X  = np.zeros((num_data + 1, num_dim))
   
@@ -44,4 +45,8 @@ def generate_data(num_dim, num_data):
   
 
 if __name__ == "__main__":
-  print generate_data(3,10)
+  normal,point,data= generate_data(num_dim = 5,num_data = 10)
+  print '' 
+  print normal
+  print point
+  print data

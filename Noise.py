@@ -4,26 +4,29 @@ import scipy
 from scipy import stats
 import random 
 
-#Data.generate_data returns a normal vector, point on the plane and a matrix of data points 
-#as (normal, point, data) 
-#normal is the normal to the plane
-#it's represented as a length num_dim np array
-#point is a point the plane passes through
-#it's represented as a length num_dim np array
-#data is a matrix of data points
-#each row of data is a datapoint of length num_dim
+"""
+	#Data.generate_data returns a normal vector, point on the plane and a matrix of data points 
+	#as (normal, point, data) 
+	#normal is the normal to the plane
+	#it is represented as a length num_dim np array
+	#point is a point the plane passes through
+	#it is represented as a length num_dim np array
+	#data is a matrix of data points
+	#each row of data is a datapoint of length num_dim
 
-#given a set of data, a stdev and a plane specified by a point on it and a normal
-#return the expedted number of points flipped if gaussian noise generated
-#with stdev is added to every data point
+	#given a set of data, a stdev and a plane specified by a point on it and a normal
+	#return the expedted number of points flipped if gaussian noise generated
+	#with stdev is added to every data point
+"""
 
 def exp_errs(stdev,data,point,normal):
+	#this function returns the expected error
 	return np.sum(scipy.stats.norm.cdf(-np.abs(np.dot(data-point,normal)),0,stdev))
 
 #given a matrix of data points data, 
 #a plane described by a point on it and a normal to it
-#a noise type noise_type and
-#a parameter p representing the percent of data to be flipped
+#a noise type "noise_type" and
+#a parameter "p" representing the percent of data to be flipped
 #returns a noisy version of x
 def add_noise(data, point,normal, noise_type, p):
 	(num_data,num_dim)=data.shape
@@ -86,7 +89,7 @@ def add_noise(data, point,normal, noise_type, p):
 #if class_noise is true only the points will be changed
 #returns (data,labels)
 #parameter p representing the percent of data to be flipped
-def label_points(num_dim,num_data, class_noise, noise_type, p):
+def label_points(num_dim,num_data, class_noise, noise_type,p):
 	(normal, point ,data)=generate_data(num_dim,num_data)
 	#print (normal, point ,data)
 	if noise_type=="contradictory":
@@ -190,5 +193,12 @@ def uniform_attr_noise(data, attr, prop, point, labels):
 if __name__ == "__main__":
   (data,labels) = label_points(3,10,True,"contradictory", .2)
   print (data,labels)
+
+  normal,point,data= generate_data(num_dim = 5,num_data = 10)
+  print 'before'
+  print data
+  noisy = add_noise(data, point, normal, noise_type = 'uniform', p = .5)
+  print 'after'
+  print noisy
 
 

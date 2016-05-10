@@ -208,7 +208,7 @@ if __name__ == '__main__':
      (data,labels)=label_points(num_dim,num_data,True,"none",.1)
      #choose_c(data,labels,.1)
      #H=brown_boost(data,labels,1.5,.1, True)
-     H=binary_choose_c(data,labels,.1)
+     (H,errors)=binary_choose_c(data,labels,.1)
      #print np.apply_along_axis(H,1,data)
      
      print "final error", get_error(H,data,labels)

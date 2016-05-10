@@ -17,7 +17,8 @@ Then our decision stump classifies on
 which side of that number that dimension of any data point is
 We generate a lot of these and look at both side then pick the best one
 '''
-def generate_stump(dim):
+def generate_stump(dim): 
+	# this is a single layer decision tree, cutting the 
 	mean=np.random.normal(0,2)
 	def pos(x):
 		if x[dim]>=mean:
@@ -98,7 +99,7 @@ if __name__ == "__main__":
   	(data,labels)=label_points(num_dims,num_data, True, "none", .1)
   	dist=np.array([1/float(num_data) for i in xrange(num_data)])
   	(stump,err)=get_weak_learner(dist,data,labels)
-  	print err
+  	print 'err',err
   	stump_err=get_error(stump,data,labels,dist)
-	print stump_err
+	print 'stump_err',stump_err
 
