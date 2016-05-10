@@ -21,17 +21,17 @@ num_data = 1000
 train_amt = 700
 total_amt = num_data
 
-normal, point, artificial_data = generate_data(num_dim, num_data)
+artificial_data,labels, point = label_points(num_dim,num_data)
 training_data = artificial_data[0:train_amt]
 training_labels = labels[0:train_amt]
 
 test_data = artificial_data[train_amt: total_amt]
 test_labels = labels[train_amt: total_amt]
 
-gaussian_data, gaussian_labels = generate_noise(artificial_data, labels, noise_type = 'gaussian')
-uniform_data, uniform_labels = generate_noise(artificial_data, labels, noise_type = 'uniform')
-mislabel_data, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel')
-contradict_data, contradict_labels = generate_noise(artificial_data, labels, noise_type = 'contradict')
+gaussian_data, gaussian_labels = generate_noise(artificial_data, labels, noise_type = 'gaussian', prop=0.1, point)
+uniform_data, uniform_labels = generate_noise(artificial_data, labels, noise_type = 'uniform', prop=0.1, point)
+mislabel_data, mislabel_labels = generate_noise(artificial_data, labels, noise_type = 'mislabel', prop=0.1, point)
+contradict_data, contradict_labels = generate_noise(artificial_data, labels, noise_type = 'contradict', prop=0.1, point)
 
 g_train = gaussian_data[0:train_amt]
 g_train_labels = gaussian_labels[0:train_amt]
@@ -57,7 +57,7 @@ c_train_labels = contradict_labels[0:train_amt]
 c_test = contradict_data[train_amt: total_amt]
 c_test_labels = contradict_labels[train_amt: total_amt]
 
-def run_trial(training_data, training_labels, num_iters, c, v):
+def run_trials(training_data, training_labels, num_iters, c, v):
   
   num_trials = 50
   ada_test_errors = []
