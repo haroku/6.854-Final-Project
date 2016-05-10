@@ -28,10 +28,9 @@ import random
 #parameter p representing the percent of data to be flipped
 def label_points(num_dim,num_data):
 	(normal, point ,data)=generate_data(num_dim,num_data)
+	print 'data.size', data.size
 	labels=np.sign(np.dot((data-point),normal))
 	return (data,labels,point)
-
-###GENERAL CODE FOR GENERATING NOISE
 
 def generate_noise(o_data, o_labels, noise_type, prop, point):
 	num_data, num_dim=o_data.shape
@@ -56,6 +55,62 @@ def generate_noise(o_data, o_labels, noise_type, prop, point):
 	else:
 		return o_data, o_labels
 
+#given a matrix of data points data, 
+#a plane described by a point on it and a normal to it
+#a noise type noise_type and
+#a parameter p representing the percent of data to be flipped
+#returns a noisy version of x
+def add_noise(data, point,normal, noise_type, p):
+	#old code
+	(num_data,num_dim)=data.shape
+	if noise_type=="none":
+		return data
+	if noise_type=="uniform":
+		rands=1-2*np.random.binomial(1,p,len(data)) #random vector of 1,-1 with ~p -1s
+		noisy_data=np.apply_along_axis(lambda x: x*rands,0,(data-point))+point
+		return noisy_data
+	if noise_type=="gaussian":
+		m=len(data)
+		#want to find gaussians to add for p
+		stdev=1.0
+		min_std=0.0
+		max_std=2.0
+		exp_flips=exp_errs(stdev,data,point,normal)
+		#print "exp_flips:",exp_flips/float(m)
+		if exp_flips>p*m:
+			while(exp_flips>p*m):
+				stdev=stdev/2.0
+				#print "stdev",stdev
+				exp_flips=exp_errs(stdev,data,point,normal)
+				#print "exp_flips:",exp_flips/float(m)
+			min_std=stdev
+			max_std=stdev*2.0
+			stdev=stdev*1.5
+		else:
+			while(exp_flips<p*m):
+				stdev=stdev*2.0
+				#print "stdev",stdev
+				exp_flips=exp_errs(stdev,data,point,normal)
+				#print "exp_flips:",exp_flips/float(m)
+			min_std=stdev/2.0
+			max_std=stdev
+			stdev=stdev*.75
+		#print "entering binary search with"
+		#print "stdev",stdev
+		exp_flips=exp_errs(stdev,data,point,normal)
+		#print "exp_flips:",exp_flips/float(m)
+		while abs(exp_flips/float(m)-p)>p/10:
+			if exp_flips>p*m:
+				stdev=(min_std+stdev)/2.0
+			else:
+				stdev=(max_std+stdev)/2.0
+			#print "stdev",stdev
+			exp_flips=exp_errs(stdev,data,point,normal)
+			#print "exp_flips:",exp_flips/float(m)
+		sigma=stdev/(np.sum(normal**2)**.5)
+		(w,h)=np.shape(data)
+		noise=np.random.normal(0,sigma,w*h).reshape(w,h)
+		return noise+data
 
 
 ###GENERATE MISLABELLED CLASS NOISE
@@ -133,5 +188,6 @@ if __name__ == "__main__":
   (data,labels,point)=label_points(3,10)
   print (data,labels)
   print generate_noise(data,labels,"uniform",.1,point)
+
 
 
