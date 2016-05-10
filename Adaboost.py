@@ -53,7 +53,7 @@ if __name__ == '__main__':
 	training_labels = labels[0:train_amt]
 	
 	adaboost_classifier, ada_error = adaboost(training_data, training_labels, num_iters)
-	
+	print ada_error
 	test_data = artificial_data[train_amt: total_amt]
 	test_labels = labels[train_amt: total_amt]
 

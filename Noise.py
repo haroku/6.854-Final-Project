@@ -34,24 +34,28 @@ def label_points(num_dim,num_data):
 
 def generate_noise(o_data, o_labels, noise_type, prop, point):
 	num_data, num_dim=o_data.shape
+	data =np.empty_like(o_data)
+	data[:] = o_data
+	labels = np.empty_like(o_labels)
+	labels[:] = o_labels
 	if noise_type == 'mislabel':
-		return mislabel_class(o_data, o_labels, prop)
+		return mislabel_class(data, labels, prop)
 	elif noise_type == 'contradict':
-		return contradictory_class(o_data, o_labels, prop)
+		return contradictory_class(data, labels, prop)
 	elif noise_type == 'gaussian':
 		#Choose attributes to modify
 		num_attrs = 3
 		attr_list = random.sample(range(0, num_dim), num_attrs)
 		for attr in attr_list:
-			o_data, o_labels = gaussian_attr_noise(o_data, o_labels, prop, attr)
-		return o_data, o_labels
+			data, labels = gaussian_attr_noise(data, labels, prop, attr)
+		return data, labels
 	elif noise_type == 'uniform':
 		#Choose attributes to modify
 		num_attrs = 3
 		attr_list = random.sample(range(0, num_dim), num_attrs)
 		for attr in attr_list:
-			o_data, o_labels = uniform_attr_noise(o_data, o_labels, attr, prop, point)
-		return o_data, o_labels
+			data, labels = uniform_attr_noise(data, labels, attr, prop, point)
+		return data, labels
 	else:
 		return o_data, o_labels
 

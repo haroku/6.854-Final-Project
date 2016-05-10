@@ -42,8 +42,10 @@ def brown_boost(data, labels, c, v, prints=False):
                #print "cumulative error", get_error(H,data,labels)
           #Associate with each example a positive weight
           W = np.exp(-(r+time_left)**2/c)
-          W_norm = W/np.sum(W)                #Normalized distribution of weights
-
+          try: 
+               W_norm = W/np.sum(W)                #Normalized distribution of weights
+          except RuntimeWarning:
+               print 'RuntimeError on W_norm: ', W
           h, error = get_weak_learner(W_norm, data, labels)
 
           gamma_i = 1-2*error
