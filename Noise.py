@@ -119,6 +119,27 @@ def label_points(num_dim,num_data, class_noise, noise_type,p):
 		out_data=add_noise(data,point, normal, noise_type, p)
 		return (out_data,labels)
 
+
+###GENERAL CODE FOR GENERATING NOISE
+
+def generate_noise(o_data, o_labels, noise_type, prop):
+	if noise_type = 'mislabel':
+		return mislabel_class(o_data, o_label_prop)
+	elif noise_type = 'contradict':
+		return contradictory_class(data, labels, prop)
+	elif noise_type = 'gaussian':
+		#Choose the attributes to modify
+		
+		for attr in attr_list:
+			o_data, o_labels = gaussian_attr_noise(o_data, o_labels, prop, attr)
+		return o_data, o_labels
+	elif noise_type = 'uniform':
+		#TO DO
+	else:
+		return o_data, o_labels
+
+
+
 ###GENERATE MISLABELLED CLASS NOISE
 
 def mislabel_class(data, label, prop):
@@ -155,7 +176,7 @@ def contradictory_class(data, labels, prop):
 
 ###GENERATE GAUSSIAN ATTRIBUTE NOISE
 
-def gaussian_attr_noise(data, prop, attr, labels):
+def gaussian_attr_noise(data, labels, prop, attr):
 	'''
 	Adds Gaussian attribute noise to a data set by selecting an attribute
 	and selecting, at random, some proportion, prop, of data points to which
@@ -170,7 +191,7 @@ def gaussian_attr_noise(data, prop, attr, labels):
 	#Choose num_noisy data points to re-assign uniform values to	
 	for i in indices:
 		data[i,attr] += numpy.random.normal(0,sigma)
-	return data, labels
+	return (data, labels)
 	
 	
 ###GENERATE UNIFORM ATTRIBUTE NOISE
