@@ -20,6 +20,7 @@ def adaboost(data, labels, num_iters):
 	alpha=[0 for i in xrange(num_iters)]
 	h_t=[]
 	errors=[]
+	out=np.zeros(num_data)
 	for t in xrange(num_iters):
 		(h,eps_t)=get_weak_learner(dist[t],data,labels)
 		#print 'error of weak learner round', t, eps_t
@@ -30,8 +31,8 @@ def adaboost(data, labels, num_iters):
 		non_normed=dist[t]*np.exp(-np.apply_along_axis(h,1,data)*labels*alpha[t])
 		normed=non_normed/(np.sum(non_normed))
 		dist.append(normed)
-		H=lambda x: np.sign(sum([alpha[i]*h_t[i](x) for i in xrange(t+1)]))
-		errors.append(get_error(H,data,labels))
+		out=out+alpha[t]*np.apply_along_axis(h,1,data)
+		errors.append(np.sum((1-np.sign(outs)*labels)/2)/float(num_data))
 
 
 
