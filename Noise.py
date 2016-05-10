@@ -19,69 +19,6 @@ import random
 	#with stdev is added to every data point
 """
 
-def exp_errs(stdev,data,point,normal):
-	#this function returns the expected error
-	return np.sum(scipy.stats.norm.cdf(-np.abs(np.dot(data-point,normal)),0,stdev))
-
-#given a matrix of data points data, 
-#a plane described by a point on it and a normal to it
-#a noise type "noise_type" and
-#a parameter "p" representing the percent of data to be flipped
-#returns a noisy version of x
-def add_noise(data, point,normal, noise_type, p):
-	(num_data,num_dim)=data.shape
-	if noise_type=="none":
-		return data
-	if noise_type=="uniform":
-		rands=1-2*np.random.binomial(1,p,len(data)) #random vector of 1,-1 with ~p -1s
-		noisy_data=np.apply_along_axis(lambda x: x*rands,0,(data-point))+point
-		return noisy_data
-	if noise_type=="gaussian":
-		m=len(data)
-		#want to find gaussians to add for p
-		stdev=1.0
-		min_std=0.0
-		max_std=2.0
-		exp_flips=exp_errs(stdev,data,point,normal)
-		#print "exp_flips:",exp_flips/float(m)
-		if exp_flips>p*m:
-			while(exp_flips>p*m):
-				stdev=stdev/2.0
-				#print "stdev",stdev
-				exp_flips=exp_errs(stdev,data,point,normal)
-				#print "exp_flips:",exp_flips/float(m)
-			min_std=stdev
-			max_std=stdev*2.0
-			stdev=stdev*1.5
-		else:
-			while(exp_flips<p*m):
-				stdev=stdev*2.0
-				#print "stdev",stdev
-				exp_flips=exp_errs(stdev,data,point,normal)
-				#print "exp_flips:",exp_flips/float(m)
-			min_std=stdev/2.0
-			max_std=stdev
-			stdev=stdev*.75
-		#print "entering binary search with"
-		#print "stdev",stdev
-		exp_flips=exp_errs(stdev,data,point,normal)
-		#print "exp_flips:",exp_flips/float(m)
-		while abs(exp_flips/float(m)-p)>p/10:
-			if exp_flips>p*m:
-				stdev=(min_std+stdev)/2.0
-			else:
-				stdev=(max_std+stdev)/2.0
-			#print "stdev",stdev
-			exp_flips=exp_errs(stdev,data,point,normal)
-			#print "exp_flips:",exp_flips/float(m)
-		sigma=stdev/(np.sum(normal**2)**.5)
-		(w,h)=np.shape(data)
-		noise=np.random.normal(0,sigma,w*h).reshape(w,h)
-		return noise+data
-		
-
-
-
 #label_points take as input the output from generate_data
 #it also takes a boolean class_noise and a string noise_type
 #it adds noise to all the points and classifies them
@@ -99,9 +36,9 @@ def label_points(num_dim,num_data):
 
 def generate_noise(o_data, o_labels, noise_type, prop, point):
 	if noise_type == 'mislabel':
-		return mislabel_class(o_data, o_label_prop)
+		return mislabel_class(o_data, o_label, prop)
 	elif noise_type == 'contradict':
-		return contradictory_class(data, labels, prop)
+		return contradictory_class(o_data, o_labels, prop)
 	elif noise_type == 'gaussian':
 		#Choose attributes to modify
 		num_attrs = 3
@@ -109,7 +46,7 @@ def generate_noise(o_data, o_labels, noise_type, prop, point):
 		for attr in attr_list:
 			o_data, o_labels = gaussian_attr_noise(o_data, o_labels, prop, attr)
 		return o_data, o_labels
-	elif noise_type = 'uniform':
+	elif noise_type == 'uniform':
 		#Choose attributes to modify
 		num_attrs = 3
 		attr_list = random.sample(range(0, num_dimensions), num_attrs)
