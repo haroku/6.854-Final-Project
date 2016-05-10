@@ -98,7 +98,7 @@ if __name__ == "__main__":
   	(num_data,num_dims)=(1000,10)
   	(data,labels)=label_points(num_dims,num_data, True, "none", .1)
   	dist=np.array([1/float(num_data) for i in xrange(num_data)])
-  	(stump,err)=get_weak_learner(dist,data,labels)
+  	(stump,err)=get_probabilistic_weak_learner(dist,data,labels)
   	print 'err',err
   	stump_err=get_error(stump,data,labels,dist)
 	print 'stump_err',stump_err

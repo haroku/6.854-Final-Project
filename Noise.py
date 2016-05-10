@@ -98,11 +98,11 @@ def label_points(num_dim,num_data):
 ###GENERAL CODE FOR GENERATING NOISE
 
 def generate_noise(o_data, o_labels, noise_type, prop, point):
-	if noise_type = 'mislabel':
+	if noise_type == 'mislabel':
 		return mislabel_class(o_data, o_label_prop)
-	elif noise_type = 'contradict':
+	elif noise_type == 'contradict':
 		return contradictory_class(data, labels, prop)
-	elif noise_type = 'gaussian':
+	elif noise_type == 'gaussian':
 		#Choose attributes to modify
 		num_attrs = 3
 		attr_list = random.sample(range(0, num_dimensions), num_attrs)
