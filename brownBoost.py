@@ -28,6 +28,7 @@ def brown_boost(data, labels, c, v, prints=False):
      W = np.zeros(num_data)        #Weight of each example, initialize to 0
      r = np.zeros(num_data)        #Real valued margin for each example; initialize to 0
      roundn=0
+     outs=np.zeros(num_data)
      errors=[]
      while time_left > 0:
           if len(t_list)>3:
@@ -66,8 +67,8 @@ def brown_boost(data, labels, c, v, prints=False):
           h_list.append(h)
           t_list.append(time_left)
           roundn +=1
-          H= lambda x: np.sign(sum([alpha_list[t]*h_list[t](x) for t in xrange(roundn)]))
-          errors.append(get_error(H,data,labels))
+          outs=outs+alpha*np.apply_along_axis(h,1,data)  
+          errors.append(np.sum((1-np.sign(outs)*labels)/2)/float(num_data))
 
      num_iters=len(h_list)
      if prints:
@@ -158,9 +159,9 @@ def binary_choose_c(data,labels,v):
      ada_err=get_error(A,data,labels)
      if ada_err==0:
           return A
-     last_success=A
+     last_success=(A,errors)
      c=scipy.special.erfinv(1-ada_err)**2
-     #print "adaboost finished", c
+     print "adaboost finished", c
      H=brown_boost(data,labels,c,v)
      min_c=0.0
      max_c=2.0*c
@@ -170,17 +171,17 @@ def binary_choose_c(data,labels,v):
           H=brown_boost(data,labels,c,v)
      max_c=c
      c=c/2.0
-     #print "binary search init",c
+     print "binary search init",c
 
      while (max_c-min_c)>.1:
           H=brown_boost(data,labels,c,v)
           if H==None:
                max_c=c
           else:
-               H=last_success
+               last_success=H
                min_c=c
           c=(max_c+min_c)/2.0
-          #print c
+          print c
      c=min_c
      return last_success
      
@@ -207,7 +208,7 @@ if __name__ == '__main__':
      from Noise import *
      (data,labels)=label_points(num_dim,num_data,True,"none",.1)
      #choose_c(data,labels,.1)
-     #H=brown_boost(data,labels,1.5,.1, True)
+     #H,errors=brown_boost(data,labels,1.5,.1, True)
      (H,errors)=binary_choose_c(data,labels,.1)
      #print np.apply_along_axis(H,1,data)
      
