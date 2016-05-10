@@ -28,6 +28,9 @@ def logitboost(data, labels, num_iter):
 		f_m.append(h)
 		out=out + np.apply_along_axis(h,1,data)
 		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
+		if len(errors>10):
+			if -errors[-1]+sum(errors[-11:-1])/5.0<.000001:
+				return (lambda x:np.sign(sum([f_m[t](x) for t in xrange(i)])),errors)
 
 	return (lambda x:np.sign(sum([f_m[i](x) for i in xrange(num_iter)])),errors)
 

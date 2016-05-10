@@ -33,6 +33,10 @@ def adaboost(data, labels, num_iters):
 		dist.append(normed)
 		out=out+alpha[t]*np.apply_along_axis(h,1,data)
 		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
+		if len(errors)>10:
+			if -errors[-1]+sum(errors[-11:-1])/5.0<.000001:
+				H=lambda x: np.sign(sum([alpha[i]*h_t[i](x) for i in xrange(t)]))
+				return (H,errors)
 
 
 
@@ -46,7 +50,7 @@ if __name__ == '__main__':
 	num_data = 1000
 	train_amt = 700
 	total_amt = num_data
-	num_iters=20
+	num_iters=100
 
 	artificial_data,labels, pt = label_points(num_dim,num_data)
 	training_data = artificial_data[0:train_amt]

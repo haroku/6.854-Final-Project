@@ -28,7 +28,7 @@ import random
 #parameter p representing the percent of data to be flipped
 def label_points(num_dim,num_data):
 	(normal, point ,data)=generate_data(num_dim,num_data)
-	print 'data.size', data.size
+	#print 'data.size', data.size
 	labels=np.sign(np.dot((data-point),normal))
 	return (data,labels,point)
 
