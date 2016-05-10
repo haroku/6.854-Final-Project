@@ -154,7 +154,7 @@ def step(alpha,t,a,b,c):
 
 def binary_choose_c(data,labels,v):
      
-     A=adaboost(data,labels,20)
+     (A,errors)=adaboost(data,labels,20)
      ada_err=get_error(A,data,labels)
      if ada_err==0:
           return A

@@ -56,6 +56,6 @@ if __name__ == "__main__":
 	(num_data,num_dim)=(1000,10)
 	from Noise import *
 	(data,labels)=label_points(num_dim = num_dim,num_data = num_data,class_noise = True,noise_type = "none",p = .1)
-	H=logitboost(data,labels,10)
+	H,errors=logitboost(data,labels,10)
 	print "total error", get_error(H,data,labels)
 

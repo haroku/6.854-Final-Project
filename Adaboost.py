@@ -44,6 +44,6 @@ if __name__ == '__main__':
 	print num_data
 	from Noise import *
 	(data,labels)=label_points(num_dim = num_dim,num_data = num_data,class_noise = True,noise_type = "none",p = .1)
-	H=adaboost(data,labels,20)
+	(H,errors)=adaboost(data,labels,20)
 	# print 'labels', labels
 	print 'total error', get_error(H,data,labels)
