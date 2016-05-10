@@ -48,5 +48,5 @@ if __name__ == "__main__":
   normal,point,data= generate_data(num_dim = 5,num_data = 10)
   print '' 
   print normal
-  print point
+  print 'point', point
   print data
