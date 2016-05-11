@@ -108,6 +108,7 @@ def run_trials(data, labels, num_iters, v):
 # RUN TRIALS FOR EACH TYPE OF NOISE
 
 for noise_type in data_set.keys():
+	print noise_type
 	dataset = data_set[noise_type]
 	data, labels = dataset[0], dataset[1]
 	ada_test_errors, logit_test_errors, brown_test_errors, ada_train_errors, logit_train_errors, brown_train_errors = run_trials(data, labels, 150, .1)

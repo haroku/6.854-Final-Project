@@ -21,17 +21,18 @@ def logitboost(data, labels, num_iter):
 		z=(y-p)/(p*(1-p))
 		w=p*(1-p)
 		(h,err)=get_weak_logit_learner(data,w,z)
-		F=lambda x:sum([f_m[j](x) for j in xrange(i)])
+		f_m.append(h)
+		F=lambda x:sum([f_m[j](x)*.5 for j in xrange(i+1)])
 		F_x=np.apply_along_axis(F,1,data)
 
 		p=np.exp(F_x)/(np.exp(F_x)+np.exp(-F_x))
 		p=np.minimum(.9999,np.maximum(.0001,p))
-		f_m.append(h)
+		#print p
 		out=out + np.apply_along_axis(h,1,data)
 		errors.append(np.sum((1-np.sign(out)*labels)/2)/float(num_data))
-		if len(errors)>10:
-			if -errors[-1]+sum(errors[-11:-1])/5.0<.000001:
-				return (lambda x:np.sign(sum([f_m[t](x) for t in xrange(i)])),errors)
+		# if len(errors)>10:
+		# 	if -errors[-1]+sum(errors[-11:-1])/5.0<.000001:
+		# 		return (lambda x:np.sign(sum([f_m[t](x) for t in xrange(i)])),errors)
 
 	return (lambda x:np.sign(sum([f_m[i](x) for i in xrange(num_iter)])),errors)
 
@@ -59,21 +60,33 @@ def get_least_square_error(f,data,w,z):
 
 if __name__ == "__main__":
 	from Noise import *
-	num_dim = 15
-	num_data = 1000
-	train_amt = 700
+	num_dim = 10
+	num_data = 500
+	train_amt = 300
 	total_amt = num_data
-	num_iters=100
+	num_iters=50
+	num_runs=20
 
-	artificial_data,labels, pt = label_points(num_dim,num_data)
-	training_data = artificial_data[0:train_amt]
-	training_labels = labels[0:train_amt]
-	
-	adaboost_classifier, ada_error = logitboost(training_data, training_labels, num_iters)
-	print ada_error
-	test_data = artificial_data[train_amt: total_amt]
-	test_labels = labels[train_amt: total_amt]
+	total_error=0.0
 
-	ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
-	print ada_test_error
+	import time
+
+	start=time.time()
+
+	for i in xrange(num_runs):
+		artificial_data,labels, pt = label_points(num_dim,num_data)
+		training_data = artificial_data[0:train_amt]
+		training_labels = labels[0:train_amt]
+		
+		adaboost_classifier, ada_error = logitboost(training_data, training_labels, num_iters)
+		print ada_error
+		test_data = artificial_data[train_amt: total_amt]
+		test_labels = labels[train_amt: total_amt]
+
+		ada_test_error = get_error(adaboost_classifier, test_data, test_labels)
+		total_error+=ada_test_error
+		print ada_test_error
+
+	print total_error/num_runs
+	print time.time()-start
 
